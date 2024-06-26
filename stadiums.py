@@ -22,8 +22,12 @@ class Stadium:
             product = Product(v["name"], v["quantity"], float(v["price"]), v["stock"], v["adicional"])
             restaurant.add_product(product)
 
+        logger.debug(f"Restaurante registrado: {restaurant.get_name()}")
         self.__restaurants.append(restaurant)
 
+    def get_id(self) -> str:
+        return self.__id
+    
     def get_name(self) -> str:
         return self.__name
     
@@ -47,3 +51,14 @@ class StadiumManager:
 
             for r in v["restaurants"]:
                 stadium.add_restaurant(r)
+            
+            self.__stadiums.append(stadium)
+
+        logger.info("Información sobre estadios registrada.")
+
+    def find_stadium_by_id(self, id: str) -> Stadium | None:
+        for s in self.__stadiums:
+            if s.get_id() == id:
+                return s
+            
+        return None
