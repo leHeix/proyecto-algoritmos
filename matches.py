@@ -73,3 +73,35 @@ class MatchManager:
             logger.debug(f"Partido registrado: {match.get_home_team().get_country()} - {match.get_away_team().get_country()} ({match.get_group()}, {match.get_date()}, estadio {match.get_stadium().get_name()})")
 
         logger.info("Información sobre partidos registrada.")
+
+    def find_matches_by_country(self, country: str) -> list[Match]:
+        matches = []
+        for m in self.__matches:
+            if m.get_home_team().get_country() == country or m.get_away_team().get_country() == country:
+                matches.append(m)
+
+        return matches
+    
+    def find_matches_by_country_code(self, cc: str) -> list[Match]:
+        matches = []
+        for m in self.__matches:
+            if m.get_home_team().get_country_code() == cc or m.get_away_team().get_country_code() == cc:
+                matches.append(m)
+
+        return matches
+    
+    def find_matches_by_team_id(self, id: str) -> list[Match]:
+        matches = []
+        for m in self.__matches:
+            if m.get_home_team().get_id() == id or m.get_away_team().get_id() == id:
+                matches.append(m)
+
+        return matches
+    
+    def find_matches_by_stadium(self, stadium: Stadium) -> list[Match]:
+        matches = []
+        for m in self.__matches:
+            if m.get_stadium() == stadium:
+                matches.append(m)
+
+        return matches

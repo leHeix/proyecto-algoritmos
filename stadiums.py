@@ -62,3 +62,12 @@ class StadiumManager:
                 return s
             
         return None
+    
+    def find_stadium_by_name(self, name: str) -> Stadium | None:
+        name_lower = name.lower() # micro optimization
+
+        for s in self.__stadiums:
+            if s.get_name().lower() == name_lower:
+                return s
+            
+        return None

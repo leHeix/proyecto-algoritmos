@@ -20,6 +20,9 @@ class Team:
     def get_country(self) -> str:
         return self.__country
     
+    def get_country_code(self) -> str:
+        return self.__code
+    
 class TeamManager:
     __teams: list[Team] = []
 
