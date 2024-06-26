@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from stadiums import StadiumManager
 from teams import TeamManager
 from matches import Match, MatchManager
@@ -56,6 +57,8 @@ if __name__ == "__main__":
                             current_menu = 1
                         case 2:
                             current_menu = 2
+                        case 3:
+                            current_menu = 3
 
                 case 1: # Buscar partidos por país
                     print("| --------- Euro 2024 / Búsqueda de partidos por país --------- |")
@@ -106,7 +109,7 @@ if __name__ == "__main__":
                             current_menu = 0
                             continue
 
-                case 2:
+                case 2: # Buscar partidos por estadio
                     print("| --------- Euro 2024 / Búsqueda de partidos por estadio --------- |")
                     print("| (1) - Buscar por nombre del estadio")
                     print("| (2) - Buscar por ID del estadio")
@@ -154,5 +157,22 @@ if __name__ == "__main__":
                         case 3:
                             current_menu = 0
                             continue
+
+                case 3: # Buscar partidos por fecha
+                    print("| --------- Euro 2024 / Búsqueda de partidos por fecha --------- |")
+                    opt_str = input("| Introduzca la fecha del partido (YYYY-MM-DD) => ")
+                    if not re.match(r"^[\d]{4}-[\d]{2}-[\d]{2}$", opt_str):
+                        input("| -> Fecha inválida, presiona ENTER para volver al menú.")
+                        current_menu = 0
+                        continue
+
+                    match_list = matches.find_matches_by_date(opt_str)
+                    clear_screen()
+                    print(f"| --------- Euro 2024 / Partidos el {opt_str} --------- |")
+                    show_matches(match_list)
+                    input("| -> Presiona ENTER para volver al menú.")
+                    current_menu = 0
+                    continue
+                
     except KeyboardInterrupt:
-        print("chau")
+        print("SALIR")
