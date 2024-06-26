@@ -28,6 +28,13 @@ if __name__ == "__main__":
     teams = TeamManager()
     matches = MatchManager(stadiums, teams)
 
+    """
+                MENÚS:
+        0 - Principal
+        1 - Búsqueda de partidos por país
+        2 - Búsqueda de partidos por estadio
+        3 - Búsqueda de partidos por fecha
+    """
     current_menu = 0
 
     try:
@@ -85,8 +92,6 @@ if __name__ == "__main__":
                             print(f"| --------- Euro 2024 / Partidos de {opt_str} --------- |")
                             show_matches(match_list)
                             input("| -> Presiona ENTER para volver al menú.")
-                            current_menu = 0
-                            continue
                         case 2:
                             opt_str = input("| Introduzca el código del país => ")
                             match_list = matches.find_matches_by_country_code(opt_str)
@@ -94,8 +99,6 @@ if __name__ == "__main__":
                             print(f"| --------- Euro 2024 / Partidos de {opt_str} --------- |")
                             show_matches(match_list)
                             input("| -> Presiona ENTER para volver al menú.")
-                            current_menu = 0
-                            continue
                         case 3:
                             opt_str = input("| Introduzca el ID del equipo => ")
                             match_list = matches.find_matches_by_country_id(opt_str)
@@ -103,11 +106,11 @@ if __name__ == "__main__":
                             print(f"| --------- Euro 2024 / Partidos de {opt_str} --------- |")
                             show_matches(match_list)
                             input("| -> Presiona ENTER para volver al menú.")
-                            current_menu = 0
-                            continue
                         case 4:
-                            current_menu = 0
-                            continue
+                            pass
+
+                    current_menu = 0
+                    continue
 
                 case 2: # Buscar partidos por estadio
                     print("| --------- Euro 2024 / Búsqueda de partidos por estadio --------- |")
@@ -131,6 +134,7 @@ if __name__ == "__main__":
                             stadium = stadiums.find_stadium_by_name(opt_str)
                             if stadium == None:
                                 input("| -> Estadio desconocido, presiona ENTER para volver al menú.")
+                                current_menu = 2
                                 continue
 
                             match_list = matches.find_matches_by_stadium(stadium)
@@ -138,13 +142,12 @@ if __name__ == "__main__":
                             print(f"| --------- Euro 2024 / Partidos en {stadium.get_name()} --------- |")
                             show_matches(match_list)
                             input("| -> Presiona ENTER para volver al menú.")
-                            current_menu = 0
-                            continue
                         case 2:
                             opt_str = input("| Introduzca la ID del estadio => ")
                             stadium = stadiums.find_stadium_by_id(opt_str)
                             if stadium == None:
                                 input("| -> Estadio desconocido, presiona ENTER para volver al menú.")
+                                current_menu = 2
                                 continue
 
                             match_list = matches.find_matches_by_stadium(stadium)
@@ -152,11 +155,11 @@ if __name__ == "__main__":
                             print(f"| --------- Euro 2024 / Partidos en {stadium.get_name()} --------- |")
                             show_matches(match_list)
                             input("| -> Presiona ENTER para volver al menú.")
-                            current_menu = 0
-                            continue
                         case 3:
-                            current_menu = 0
-                            continue
+                            pass
+
+                    current_menu = 0
+                    continue
 
                 case 3: # Buscar partidos por fecha
                     print("| --------- Euro 2024 / Búsqueda de partidos por fecha --------- |")
@@ -173,6 +176,6 @@ if __name__ == "__main__":
                     input("| -> Presiona ENTER para volver al menú.")
                     current_menu = 0
                     continue
-                
+
     except KeyboardInterrupt:
         print("SALIR")
