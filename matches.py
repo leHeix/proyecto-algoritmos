@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 class Match:
     __id: str
     __number: int
-    __home = Team
-    __away = Team
+    __home: Team
+    __away: Team
     __date: str
     __group: str
     __stadium: Stadium
