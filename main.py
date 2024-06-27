@@ -236,8 +236,6 @@ if __name__ == "__main__":
                     while not customer_seat_assigned:
                         try:
                             customer_seat = int(input(f"| Introduzca el número de asiento ({1 if customer_ticket_type == "general" else customer_match.get_stadium().get_capacity()[0] + 1}-{customer_match.get_stadium().get_capacity()[0] if customer_ticket_type == "general" else customer_match.get_stadium().get_max_capacity()}) => "))
-                            if customer_ticket_type == "vip":
-                                customer_seat += customer_match.get_stadium().get_capacity()[1]
 
                             if customer_match.is_seat_occupied(customer_seat):
                                 print("| -> Ese asiento ya está ocupado.")
