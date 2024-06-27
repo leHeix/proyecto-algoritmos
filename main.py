@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import itertools as it
 from stadiums import StadiumManager
 from teams import TeamManager
 from matches import Match, MatchManager
@@ -19,6 +20,30 @@ def show_matches(matches: list[Match]):
             print(f"| - Fecha: {m.get_date()}")
             print(f"| - Grupo: {m.get_group()}")
             print(f"| - Estadio: {m.get_stadium().get_name()} (ID: {m.get_stadium().get_id()})")
+            print(f"| - ID: {m.get_id()}")
+
+# Vampire number checker
+# Took this from https://stackoverflow.com/a/39434945
+def get_fangs(num_str):
+    num_iter = it.permutations(num_str, len(num_str))
+    for num_list in num_iter:
+        v = ''.join(num_list)
+        x, y = v[:int(len(v)/2)], v[int(len(v)/2):]
+        if x[-1] == '0' and y[-1] == '0':
+            continue
+        if int(x) * int(y) == int(num_str):
+            return x,y
+    return False
+
+def is_vampire(m_int):
+    n_str = str(m_int)
+    if len(n_str) % 2 == 1:
+        return False
+    fangs = get_fangs(n_str)
+    if not fangs:
+        return False
+    return True
+##
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] %(message)s")
@@ -34,6 +59,7 @@ if __name__ == "__main__":
         1 - Búsqueda de partidos por país
         2 - Búsqueda de partidos por estadio
         3 - Búsqueda de partidos por fecha
+        4 - Comprar entrada
     """
     current_menu = 0
 
@@ -47,13 +73,14 @@ if __name__ == "__main__":
                     print("| (1) - Buscar partidos por país")
                     print("| (2) - Buscar partidos por estadio")
                     print("| (3) - Buscar partidos por fecha")
+                    print("| (4) - Comprar entrada")
                     print("| Ctrl + C - Salir")
                     opt_str = input("| => ")
                     option = None
 
                     try:
                         option = int(opt_str)
-                        if option < 1 or option > 3:
+                        if option < 1 or option > 4:
                             raise ValueError
                     except ValueError:
                         input("| -> Opción inválida, presiona ENTER para volver al menú.")
@@ -66,6 +93,8 @@ if __name__ == "__main__":
                             current_menu = 2
                         case 3:
                             current_menu = 3
+                        case 4:
+                            current_menu = 4
 
                 case 1: # Buscar partidos por país
                     print("| --------- Euro 2024 / Búsqueda de partidos por país --------- |")
@@ -177,5 +206,71 @@ if __name__ == "__main__":
                     current_menu = 0
                     continue
 
+                case 4: # Comprar entrada
+                    print("| --------- Euro 2024 / Comprar entrada --------- |")
+                    customer_name = input("| Introduzca su nombre (o SALIR para volver al menú principal) => ")
+                    if customer_name == "SALIR":
+                        current_menu = 0
+                        continue
+
+                    customer_id = input("| Introduzca su cédula => ")
+                    customer_age = input("| Introduzca su edad => ")
+                    customer_match_id = input("| Introduzca la ID del partido => ")
+                    customer_match = matches.find_match_by_id(customer_match_id)
+                    if customer_match == None:
+                        input("| -> Partido inválido, presiona ENTER para volver al menú.")
+                        continue
+
+                    if customer_match.is_sold_out():
+                        input("| -> Este partido esta sold out, presiona ENTER para volver al menú.")
+                        continue
+
+                    customer_ticket_type = input("| Tipo de entrada (VIP/General) => ").lower()
+                    if customer_ticket_type != "vip" and customer_ticket_type != "general":
+                        input("| -> Tipo de entrada inválido, presiona ENTER para volver al menú.")
+                        continue
+
+                    print(f"| Asientos libres: {customer_match.get_free_seats(customer_ticket_type == "vip")}")
+
+                    customer_seat_assigned = False
+                    while not customer_seat_assigned:
+                        try:
+                            customer_seat = int(input(f"| Introduzca el número de asiento ({1 if customer_ticket_type == "general" else customer_match.get_stadium().get_capacity()[0] + 1}-{customer_match.get_stadium().get_capacity()[0] if customer_ticket_type == "general" else customer_match.get_stadium().get_max_capacity()}) => "))
+                            if customer_ticket_type == "vip":
+                                customer_seat += customer_match.get_stadium().get_capacity()[1]
+
+                            if customer_match.is_seat_occupied(customer_seat):
+                                print("| -> Ese asiento ya está ocupado.")
+                                continue
+
+                            customer_seat_assigned = True
+                        except ValueError:
+                            print("| -> Asiento inválido.")
+                    
+                    print("| --------------------------")
+
+                    ticket_price = 75 if customer_ticket_type == "vip" else 35
+                    print(f"| Precio de la entrada: {ticket_price}$")
+                    if is_vampire(customer_id):
+                        ticket_price -= (50 * ticket_price) / 100
+                        print("| Su entrada tiene 50% de descuento porque su cédula es un número vampiro.")
+                        print(f"| Precio con descuento: {ticket_price}$")
+
+                    iva = (16 * ticket_price) / 100
+                    print(f"| IVA 16%: {iva}$")
+                    ticket_price += iva
+                    print(f"| Precio final: {ticket_price}")
+                    print(f"| Asiento seleccionado: {customer_seat}")
+                    confirmation_str = input("| Introduzca CONFIRMAR para confirmar la compra de su entrada => ")
+                    if confirmation_str == "CONFIRMAR":
+                        customer_match.occupy_seat(customer_seat)
+                        print("| Pago éxitoso. Su compra fue registrada.")
+                        input("| -> Presiona ENTER para volver al menú.")
+                    else:
+                        input("| Compra cancelada. Presiona ENTER para volver al menú.")
+                    
+                    current_menu = 0
+                    continue
+    
     except KeyboardInterrupt:
         print("SALIR")

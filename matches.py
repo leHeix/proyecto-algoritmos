@@ -12,6 +12,7 @@ class Match:
     __date: str
     __group: str
     __stadium: Stadium
+    __tickets_sold: dict = {}
 
     def __init__(self, id: str, number: int, home: Team, away: Team, date: str, group: str, stadium: Stadium):
         self.__id = id
@@ -22,6 +23,9 @@ class Match:
         self.__group = group
         self.__stadium = stadium
 
+    def get_id(self) -> str:
+        return self.__id
+    
     def get_home_team(self) -> Team:
         return self.__home
     
@@ -36,6 +40,24 @@ class Match:
     
     def get_stadium(self) -> Stadium:
         return self.__stadium
+    
+    def is_seat_occupied(self, seat: int) -> bool:
+        return seat in self.__tickets_sold and self.__tickets_sold[seat]
+    
+    def occupy_seat(self, seat: int):
+        self.__tickets_sold[seat] = True
+
+    def is_sold_out(self) -> bool:
+        return len(self.__tickets_sold) == self.__stadium.get_max_capacity()
+    
+    def get_free_seats(self, vip: bool) -> list[int]:
+        seats = []
+
+        for i in range(1 if not vip else self.__stadium.get_capacity()[0] + 1, self.__stadium.get_capacity()[0] + 1 if not vip else self.__stadium.get_max_capacity() + 1):
+            if i not in self.__tickets_sold:
+                seats.append(i)
+
+        return seats
     
 class MatchManager:
     __matches: list[Match] = []
@@ -79,7 +101,7 @@ class MatchManager:
 
         matches = []
         for m in self.__matches:
-            if m.get_home_team().get_country() == country_lower or m.get_away_team().get_country() == country_lower:
+            if m.get_home_team().get_country().lower() == country_lower or m.get_away_team().get_country().lower() == country_lower:
                 matches.append(m)
 
         return matches
@@ -117,3 +139,10 @@ class MatchManager:
                 matches.append(m)
 
         return matches
+    
+    def find_match_by_id(self, id: str) -> Match | None:
+        for m in self.__matches:
+            if m.get_id() == id:
+                return m
+            
+        return None
