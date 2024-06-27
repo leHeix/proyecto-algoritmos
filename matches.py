@@ -2,6 +2,7 @@ from teams import Team, TeamManager
 from stadiums import Stadium, StadiumManager
 import requests
 import logging
+from uuid import uuid4
 logger = logging.getLogger(__name__)
 
 class Match:
@@ -44,8 +45,11 @@ class Match:
     def is_seat_occupied(self, seat: int) -> bool:
         return seat in self.__tickets_sold and self.__tickets_sold[seat]
     
-    def occupy_seat(self, seat: int):
-        self.__tickets_sold[seat] = True
+    def occupy_seat(self, seat: int) -> str:
+        self.__tickets_sold[seat]["occupied"] = True
+        ticket_id = str(uuid4())
+        self.__tickets_sold[seat]["ticket_id"] = ticket_id
+        return ticket_id
 
     def is_sold_out(self) -> bool:
         return len(self.__tickets_sold) == self.__stadium.get_max_capacity()

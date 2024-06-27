@@ -261,8 +261,9 @@ if __name__ == "__main__":
                     print(f"| Asiento seleccionado: {customer_seat}")
                     confirmation_str = input("| Introduzca CONFIRMAR para confirmar la compra de su entrada => ")
                     if confirmation_str == "CONFIRMAR":
-                        customer_match.occupy_seat(customer_seat)
+                        ticket_id = customer_match.occupy_seat(customer_seat)
                         print("| Pago éxitoso. Su compra fue registrada.")
+                        print(f"| Su código de entrada es {ticket_id}.")
                         input("| -> Presiona ENTER para volver al menú.")
                     else:
                         input("| Compra cancelada. Presiona ENTER para volver al menú.")
