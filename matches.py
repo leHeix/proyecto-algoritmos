@@ -46,11 +46,37 @@ class Match:
         return seat in self.__tickets_sold and self.__tickets_sold[seat]
     
     def occupy_seat(self, seat: int) -> str:
-        self.__tickets_sold[seat]["occupied"] = True
         ticket_id = str(uuid4())
-        self.__tickets_sold[seat]["ticket_id"] = ticket_id
+        self.__tickets_sold[seat] = { "occupied": True, "ticket_id": ticket_id, "ticket_used": False}
         return ticket_id
-
+    
+    def ticket_is_used(self, ticket_id: str) -> bool:
+        for v in dict.values(self.__tickets_sold):
+            if v["ticket_id"] == ticket_id:
+                return v["ticket_used"]
+            
+        return False
+    
+    def mark_ticket_as_used(self, ticket_id: str):
+        for v in dict.values(self.__tickets_sold):
+            if v["ticket_id"] == ticket_id:
+                v["ticket_used"] = True
+                break
+    
+    def ticket_exists(self, ticket_id: str) -> bool:
+        for v in dict.values(self.__tickets_sold):
+            if v["ticket_id"] == ticket_id:
+                return True
+            
+        return False
+    
+    def get_ticket_info(self, ticket_id: str) -> tuple[int, bool] | None:
+        for k, v in dict.items(self.__tickets_sold):
+            if v["ticket_id"] == ticket_id:
+                return (k, v["ticket_used"])
+            
+        return None
+    
     def is_sold_out(self) -> bool:
         return len(self.__tickets_sold) == self.__stadium.get_max_capacity()
     

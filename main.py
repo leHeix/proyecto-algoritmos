@@ -60,6 +60,8 @@ if __name__ == "__main__":
         2 - Búsqueda de partidos por estadio
         3 - Búsqueda de partidos por fecha
         4 - Comprar entrada
+        5 - Registrar asistencia a partido
+        6 - Comprobar código de entrada
     """
     current_menu = 0
 
@@ -74,13 +76,15 @@ if __name__ == "__main__":
                     print("| (2) - Buscar partidos por estadio")
                     print("| (3) - Buscar partidos por fecha")
                     print("| (4) - Comprar entrada")
+                    print("| (5) - Registrar asistencia a partido")
+                    print("| (6) - Comprobar código de entrada")
                     print("| Ctrl + C - Salir")
                     opt_str = input("| => ")
                     option = None
 
                     try:
                         option = int(opt_str)
-                        if option < 1 or option > 4:
+                        if option < 1 or option > 6:
                             raise ValueError
                     except ValueError:
                         input("| -> Opción inválida, presiona ENTER para volver al menú.")
@@ -95,6 +99,10 @@ if __name__ == "__main__":
                             current_menu = 3
                         case 4:
                             current_menu = 4
+                        case 5:
+                            current_menu = 5
+                        case 6:
+                            current_menu = 6
 
                 case 1: # Buscar partidos por país
                     print("| --------- Euro 2024 / Búsqueda de partidos por país --------- |")
@@ -270,6 +278,51 @@ if __name__ == "__main__":
                     
                     current_menu = 0
                     continue
-    
+                
+                case 5: # Registrar asistencia a partido
+                    print("| --------- Euro 2024 / Registrar asistencia --------- |")
+                    customer_match_id = input("| Introduzca la ID del partido => ")
+                    customer_match = matches.find_match_by_id(customer_match_id)
+                    if customer_match == None:
+                        input("| -> Partido inválido, presiona ENTER para volver al menú.")
+                        current_menu = 0
+                        continue
+
+                    customer_ticket_id = input("| Introduzca el código de entrada => ")
+                    if not customer_match.ticket_exists(customer_ticket_id):
+                        input("| -> El código de entrada no existe, presiona ENTER para volver al menú")
+                        current_menu = 0
+                        continue
+
+                    if customer_match.ticket_is_used(customer_ticket_id):
+                        input("| -> El código de entrada ya fue utilizado, presiona ENTER para volver al menú")
+                        current_menu = 0
+                        continue
+
+                    customer_match.mark_ticket_as_used(customer_ticket_id)
+                    input("| -> Asistencia registrada, presiona ENTER para volver al menú.")
+                    current_menu = 0
+                    continue
+
+                case 6: # Comprobar código de entrada
+                    print("| --------- Euro 2024 / Registrar asistencia --------- |")
+                    customer_match_id = input("| Introduzca la ID del partido => ")
+                    customer_match = matches.find_match_by_id(customer_match_id)
+                    if customer_match == None:
+                        input("| -> Partido inválido, presiona ENTER para volver al menú.")
+                        current_menu = 0
+                        continue
+
+                    customer_ticket_id = input("| Introduzca el código de entrada => ")
+                    if not customer_match.ticket_exists(customer_ticket_id):
+                        input("| -> El código de entrada no existe, presiona ENTER para volver al menú")
+                        current_menu = 0
+                        continue
+
+                    [seat, used] = customer_match.get_ticket_info(customer_ticket_id)
+                    print(f"| -> Este código corresponde al asiento {seat}. {"Ya fue utilizado para entrar." if used else "Aún no ha sido utilizado."}")
+                    input("| -> Presiona ENTER para volver al menú.")
+                    current_menu = 0
+
     except KeyboardInterrupt:
         print("SALIR")
