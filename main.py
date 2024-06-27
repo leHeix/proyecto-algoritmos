@@ -1,3 +1,9 @@
+"""
+                                        EURO 2024
+    I lost motivation doing this halfway through so the code gets a bit uglier at some parts
+    It works, though.
+"""
+
 import logging
 import os
 import re
@@ -8,7 +14,7 @@ from matches import Match, MatchManager
 logger = logging.getLogger(__name__)
 
 def clear_screen():
-    print("\n"*10)
+    print("\n" * 10)
     os.system("cls" if os.name == "nt" else "clear")
 
 def show_matches(matches: list[Match]):
@@ -90,19 +96,7 @@ if __name__ == "__main__":
                         input("| -> Opción inválida, presiona ENTER para volver al menú.")
                         continue
 
-                    match option:
-                        case 1:
-                            current_menu = 1
-                        case 2:
-                            current_menu = 2
-                        case 3:
-                            current_menu = 3
-                        case 4:
-                            current_menu = 4
-                        case 5:
-                            current_menu = 5
-                        case 6:
-                            current_menu = 6
+                    current_menu = option
 
                 case 1: # Buscar partidos por país
                     print("| --------- Euro 2024 / Búsqueda de partidos por país --------- |")
@@ -269,7 +263,7 @@ if __name__ == "__main__":
                     print(f"| Asiento seleccionado: {customer_seat}")
                     confirmation_str = input("| Introduzca CONFIRMAR para confirmar la compra de su entrada => ")
                     if confirmation_str == "CONFIRMAR":
-                        ticket_id = customer_match.occupy_seat(customer_seat)
+                        ticket_id = customer_match.occupy_seat(customer_seat, customer_id)
                         print("| Pago éxitoso. Su compra fue registrada.")
                         print(f"| Su código de entrada es {ticket_id}.")
                         input("| -> Presiona ENTER para volver al menú.")
