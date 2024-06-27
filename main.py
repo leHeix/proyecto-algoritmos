@@ -26,7 +26,7 @@ def show_matches(matches: list[Match]):
             print(f"| {m.get_home_team().get_country()} - {m.get_away_team().get_country()}")
             print(f"| - Fecha: {m.get_date()}")
             print(f"| - Grupo: {m.get_group()}")
-            print(f"| - Estadio: {m.get_stadium().get_name()} (ID: {m.get_stadium().get_id()})")
+            print(f"| - Estadio: {m.get_stadium().get_name()} de {m.get_stadium().get_city()} (ID: {m.get_stadium().get_id()})")
             print(f"| - ID: {m.get_id()}")
 
 # Vampire number checker
@@ -52,6 +52,15 @@ def is_vampire(m_int):
     return True
 ##
 
+def is_perfect_number(number):
+    sum = 0
+
+    for i in range(1, number):
+        if number % i == 0:
+            sum += i
+
+    return sum == number
+
 current_menu = 0
 
 def main():
@@ -69,13 +78,14 @@ def main():
                 print("| (4) - Comprar entrada")
                 print("| (5) - Registrar asistencia a partido")
                 print("| (6) - Comprobar código de entrada")
+                print("| (7) - Restaurantes en su estadio")
                 print("| Ctrl + C - Salir (de cualquier menú)")
                 opt_str = input("| => ")
                 option = None
 
                 try:
                     option = int(opt_str)
-                    if option < 1 or option > 6:
+                    if option < 1 or option > 7:
                         raise ValueError
                 except ValueError:
                     input("| -> Opción inválida, presiona ENTER para volver al menú.")
@@ -200,8 +210,16 @@ def main():
                     current_menu = 0
                     continue
 
-                customer_id = input("| Introduzca su cédula => ")
-                customer_age = input("| Introduzca su edad => ")
+                try:
+                    customer_id = int(input("| Introduzca su cédula => "))
+                    customer_age = int(input("| Introduzca su edad => "))
+                    if customer_age < 0:
+                        raise ValueError
+                except ValueError:
+                    print("| -> Datos inválidos (ambos deben ser números o la edad debe ser positiva). Presiona ENTER para volver al menú.")
+                    current_menu = 0
+                    continue
+
                 customer_match_id = input("| Introduzca la ID del partido => ")
                 customer_match = matches.find_match_by_id(customer_match_id)
                 if customer_match == None:
@@ -244,13 +262,13 @@ def main():
                 iva = (16 * ticket_price) / 100
                 print(f"| IVA 16%: {iva}$")
                 ticket_price += iva
-                print(f"| Precio final: {ticket_price}")
+                print(f"| Precio final: {ticket_price}$")
                 print(f"| Asiento seleccionado: {customer_seat}")
                 confirmation_str = input("| Introduzca CONFIRMAR para confirmar la compra de su entrada => ")
                 if confirmation_str == "CONFIRMAR":
                     ticket_id = customer_match.occupy_seat(customer_seat, customer_id)
                     print("| Pago éxitoso. Su compra fue registrada.")
-                    print(f"| Su código de entrada es {ticket_id}.")
+                    print(f"| Su código de entrada es {ticket_id}")
                     input("| -> Presiona ENTER para volver al menú.")
                 else:
                     input("| Compra cancelada. Presiona ENTER para volver al menú.")
@@ -302,6 +320,110 @@ def main():
                 print(f"| -> Este código corresponde al asiento {seat}. {"Ya fue utilizado para entrar." if used else "Aún no ha sido utilizado."}")
                 input("| -> Presiona ENTER para volver al menú.")
                 current_menu = 0
+
+            case 7: # Restaurantes en su estadio
+                print("| --------- Euro 2024 / Restaurantes en su estadio --------- |")
+
+                customer_match_id = input("| Introduzca la ID del partido al que va a asistir => ")
+                customer_match = matches.find_match_by_id(customer_match_id)
+                if customer_match == None:
+                    input("| -> Partido inválido, presiona ENTER para volver al menú.")
+                    current_menu = 0
+                    continue
+
+                customer_ticket_id = input("| Introduzca su código de entrada => ")
+                if not customer_match.ticket_exists(customer_ticket_id):
+                    input("| -> El código de entrada no existe, presiona ENTER para volver al menú")
+                    current_menu = 0
+                    continue
+
+                [seat, used, customer_id, customer_is_vip] = customer_match.get_ticket_info(customer_ticket_id)
+                if not customer_is_vip: # Check if ticket is VIP
+                    input("| -> El acceso a restaurantes está restringido a entradas VIP, presiona ENTER para volver al menú")
+                    current_menu = 0
+                    continue
+
+                match_stadium = customer_match.get_stadium()
+
+                clear_screen()
+                print(f"| --------- Euro 2024 / Restaurantes en {match_stadium.get_name()} --------- |")
+                print("| Su entrada VIP le da acceso a los siguientes restaurantes:")
+
+                restaurants = match_stadium.get_restaurants()
+                for r in restaurants:
+                    print(f"| - {r.get_name()}")
+
+                restaurant = None
+
+                while restaurant == None:
+                    restaurant_name = input("| Introduzca el nombre de un restaurante para ver su menú o CTRL + C para volver al menú principal => ").lower()
+
+                    for r in restaurants:
+                        if r.get_name().lower() == restaurant_name:
+                            restaurant = r
+
+                    if restaurant == None:
+                        print("| Nombre de restaurante inválido.")
+                        continue
+                
+                while True:
+                    clear_screen()
+                    print(f"| --------- Euro 2024 / Menú de {restaurant.get_name()} --------- |")
+                    for i in restaurant.get_products():
+                        print(f"| {i.get_name()}")
+                        print(f"| - Stock: {i.get_stock()}")
+                        print(f"| - Precio: {i.get_price()} (+16% IVA)")
+                        print(f"| - Tipo: {i.get_type()}")
+                    
+                    product = None
+
+                    while product == None:
+                        item_name = input(f"| Introduce el nombre de un ítem si deseas comprarlo, o CTRL + C para volver al menú principal => ").lower()
+
+                        for p in restaurant.get_products():
+                            if p.get_name().lower() == item_name:
+                                product = p
+
+                        if product == None:
+                            print("| Nombre de ítem inválido.")
+                            continue
+
+                        if product.get_type() == "alcoholic":
+                            age_int = None
+                            while not age_int:
+                                try:
+                                    age = input("| Introduce tu edad => ")
+                                    age_int = int(age)
+                                    if age_int <= 0:
+                                        raise ValueError
+                                except ValueError:
+                                    print("| - La edad debe ser un número mayor a 0.")
+                                    age_int = 0
+
+                            if age_int < 18:
+                                print("| - No puedes comprar bebidas alcohólicas siendo menor de 18 años.")
+                                product = None
+                                continue
+
+                    print("| -----------------")
+                    final_price = p.get_price()
+                    print(f"| Precio: {final_price}$")
+                    if is_perfect_number(customer_id):
+                        discount = (15 * final_price) / 100
+                        final_price -= discount
+                        print(f"| Descuento por cédula de número perfecto: {discount}$")
+                    iva = (16 * final_price) / 100
+                    final_price += iva
+                    print(f"| + IVA 16%: {iva}$")
+                    print(f"| > Total: {final_price}$")
+
+                    confirmation_str = input("| Introduzca CONFIRMAR para confirmar la compra de su ítem => ")
+                    if confirmation_str == "CONFIRMAR":
+                        product.mark_sale()
+                        print("| Pago éxitoso. Su compra fue registrada.")
+                        input("| -> Presiona ENTER para volver al menú.")
+                    else:
+                        input("| Compra cancelada. Presiona ENTER para volver al menú.")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] %(message)s")

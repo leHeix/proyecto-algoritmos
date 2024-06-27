@@ -45,7 +45,7 @@ class Match:
     def is_seat_occupied(self, seat: int) -> bool:
         return seat in self.__tickets_sold and self.__tickets_sold[seat]
     
-    def occupy_seat(self, seat: int, customer_id: int ) -> str:
+    def occupy_seat(self, seat: int, customer_id: int) -> str:
         ticket_id = str(uuid4())
         self.__tickets_sold[seat] = { "occupied": True, "ticket_id": ticket_id, "ticket_used": False, "customer_id": customer_id, "ticket_is_vip": seat > self.__stadium.get_capacity()[0] }
         return ticket_id
@@ -70,10 +70,10 @@ class Match:
             
         return False
     
-    def get_ticket_info(self, ticket_id: str) -> tuple[int, bool] | None:
+    def get_ticket_info(self, ticket_id: str) -> tuple[int, bool, int, bool] | None:
         for k, v in dict.items(self.__tickets_sold):
             if v["ticket_id"] == ticket_id:
-                return (k, v["ticket_used"])
+                return (k, v["ticket_used"], v["customer_id"], v["ticket_is_vip"])
             
         return None
     

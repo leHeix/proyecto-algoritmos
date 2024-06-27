@@ -8,14 +8,15 @@ class Stadium:
     __name: str
     __city: str
     __capacity: tuple[int, int] = (0, 0)
-    __restaurants: list[Restaurant] = []
+    __restaurants: list[Restaurant]
 
     def __init__(self, id: str, name: str, city: str, capacity_general: int, capacity_vip: int):
         self.__id = id
         self.__name = name
         self.__city = city
         self.__capacity = (capacity_general, capacity_vip)
-        
+        self.__restaurants = []
+
     def add_restaurant(self, data: list):
         restaurant = Restaurant(data["name"])
         for v in data["products"]:
@@ -31,11 +32,17 @@ class Stadium:
     def get_name(self) -> str:
         return self.__name
     
+    def get_city(self) -> str:
+        return self.__city
+    
     def get_capacity(self) -> tuple[int, int]:
         return self.__capacity
     
     def get_max_capacity(self) -> int:
         return self.__capacity[0] + self.__capacity[1]
+    
+    def get_restaurants(self) -> list[Restaurant]:
+        return self.__restaurants
     
 class StadiumManager:
     __stadiums: list[Stadium] = []

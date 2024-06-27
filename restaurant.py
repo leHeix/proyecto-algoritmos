@@ -26,16 +26,24 @@ class Product:
     
     def get_type(self) -> str:
         return self.__type
+    
+    def mark_sale(self):
+        self.__stock -= 1
+        self.__amount += 1
 
 class Restaurant:
     __name: str = ""
-    __products: list[Product] = []
+    __products: list[Product]
 
     def __init__(self, name: str):
         self.__name = name
+        self.__products = []
 
     def get_name(self) -> str:
         return self.__name
     
     def add_product(self, product: Product) -> None:
         self.__products.append(product)
+
+    def get_products(self) -> list[Product]:
+        return self.__products
