@@ -13,7 +13,7 @@ class Match:
     __date: str
     __group: str
     __stadium: Stadium
-    __tickets_sold: dict = {}
+    __tickets_sold: dict
 
     def __init__(self, id: str, number: int, home: Team, away: Team, date: str, group: str, stadium: Stadium):
         self.__id = id
@@ -23,6 +23,7 @@ class Match:
         self.__date = date
         self.__group = group
         self.__stadium = stadium
+        self.__tickets_sold = {}
 
     def get_id(self) -> str:
         return self.__id
@@ -89,6 +90,16 @@ class Match:
 
         return seats
     
+    def get_assistance_count(self) -> int:
+        sum = 0
+        for v in dict.values(self.__tickets_sold):
+            if v["ticket_used"]:
+                sum += 1
+
+        return sum
+    
+    def get_sold_ticket_count(self) -> int:
+        return len(self.__tickets_sold)
 class MatchManager:
     __matches: list[Match] = []
 
@@ -126,6 +137,9 @@ class MatchManager:
 
         logger.info("Información sobre partidos registrada.")
 
+    def get_matches(self) -> list[Match]:
+        return self.__matches
+    
     def find_matches_by_country(self, country: str) -> list[Match]:
         country_lower = country.lower()
 

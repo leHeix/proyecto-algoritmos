@@ -4,6 +4,7 @@ class Product:
     __price: float
     __stock: int
     __type: str
+    __sales: int
 
     def __init__(self, name: str, amount: int, price: float, stock: int, type: str):
         self.__name = name
@@ -11,6 +12,7 @@ class Product:
         self.__price = price
         self.__stock = stock
         self.__type = type
+        self.__sales = 0
 
     def get_name(self) -> str:
         return self.__name
@@ -30,6 +32,7 @@ class Product:
     def mark_sale(self):
         self.__stock -= 1
         self.__amount += 1
+        self.__sales += 1
 
 class Restaurant:
     __name: str = ""

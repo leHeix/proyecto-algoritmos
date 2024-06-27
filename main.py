@@ -79,13 +79,14 @@ def main():
                 print("| (5) - Registrar asistencia a partido")
                 print("| (6) - Comprobar código de entrada")
                 print("| (7) - Restaurantes en su estadio")
+                print("| (8) - Estadísticas generales")
                 print("| Ctrl + C - Salir (de cualquier menú)")
                 opt_str = input("| => ")
                 option = None
 
                 try:
                     option = int(opt_str)
-                    if option < 1 or option > 7:
+                    if option < 1 or option > 8:
                         raise ValueError
                 except ValueError:
                     input("| -> Opción inválida, presiona ENTER para volver al menú.")
@@ -424,6 +425,29 @@ def main():
                         input("| -> Presiona ENTER para volver al menú.")
                     else:
                         input("| Compra cancelada. Presiona ENTER para volver al menú.")
+
+            case 8: # Estadísticas generales
+                print("| --------- Euro 2024 / Estadísticas --------- |")
+                print("| 1 - Promedio de gasto de un cliente VIP en el estadio: Desconocido")
+                print("| 2 - Asistencia de partidos:")
+
+                match_list = [] + matches.get_matches() # makes a copy of the list
+                match_list.sort(key=lambda x: x.get_assistance_count(), reverse=True)
+                for m in match_list:
+                    print(f"|     - {m.get_home_team().get_country()} - {m.get_away_team().get_country()}, en {m.get_stadium().get_name()} ({m.get_sold_ticket_count()} entradas vendidas, {m.get_assistance_count()} personas asistieron)")
+
+                print(f"| 3 - Partido con mayor asistencia: {match_list[0].get_home_team().get_country()} - {match_list[0].get_away_team().get_country()} ({match_list[0].get_assistance_count()} personas asistieron)")
+                
+                highest_selling_match = None
+                most_sold_tickets = 0
+                for m in matches.get_matches():
+                    if m.get_sold_ticket_count() > most_sold_tickets:
+                        highest_selling_match = m
+                        most_sold_tickets = m.get_sold_ticket_count()
+
+                print(f"| 4 - Partido con mayor cantidad de entradas vendidas: {highest_selling_match.get_home_team().get_country()} - {highest_selling_match.get_away_team().get_country()} ({most_sold_tickets} entradas vendidas)")
+                input("| -> Presiona ENTER para volver al menú.")
+                current_menu = 0
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] %(message)s")
