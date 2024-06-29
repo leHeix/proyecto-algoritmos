@@ -8,7 +8,6 @@ import logging
 import os
 import re
 import itertools as it
-import signal
 from stadiums import StadiumManager
 from teams import TeamManager
 from matches import Match, MatchManager
@@ -64,6 +63,20 @@ def is_perfect_number(number):
 current_menu = 0
 
 def main():
+    """
+                MENUS:
+        0 - Principal
+        1 - Búsqueda de partidos por país
+        2 - Búsqueda de partidos por estadio
+        3 - Búsqueda de partidos por fecha
+        4 - Comprar entrada
+        5 - Registrar asistencia a partido
+        6 - Comprobar código de entrada
+        7 - Restaurantes en su estadio
+        8 - Estadísticas generales
+
+        Each menu will be handled according to this variable's value
+    """
     global current_menu
 
     while True:
@@ -456,17 +469,6 @@ if __name__ == "__main__":
     stadiums = StadiumManager()
     teams = TeamManager()
     matches = MatchManager(stadiums, teams)
-
-    """
-                MENÚS:
-        0 - Principal
-        1 - Búsqueda de partidos por país
-        2 - Búsqueda de partidos por estadio
-        3 - Búsqueda de partidos por fecha
-        4 - Comprar entrada
-        5 - Registrar asistencia a partido
-        6 - Comprobar código de entrada
-    """
 
     while True:
         try:
