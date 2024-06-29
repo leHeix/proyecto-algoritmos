@@ -100,6 +100,7 @@ class Match:
     
     def get_sold_ticket_count(self) -> int:
         return len(self.__tickets_sold)
+    
 class MatchManager:
     __matches: list[Match] = []
 
