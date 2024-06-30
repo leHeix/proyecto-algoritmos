@@ -30,7 +30,7 @@ def show_matches(matches: list[Match]):
 
 # Vampire number checker
 # Took this from https://stackoverflow.com/a/39434945
-def get_fangs(num_str):
+def get_fangs(num_str: str) -> bool | tuple[int, int]:
     num_iter = it.permutations(num_str, len(num_str))
     for num_list in num_iter:
         v = ''.join(num_list)
@@ -41,7 +41,7 @@ def get_fangs(num_str):
             return x,y
     return False
 
-def is_vampire(m_int):
+def is_vampire(m_int: int) -> bool:
     n_str = str(m_int)
     if len(n_str) % 2 == 1:
         return False
@@ -51,7 +51,7 @@ def is_vampire(m_int):
     return True
 ##
 
-def is_perfect_number(number):
+def is_perfect_number(number: int) -> bool:
     sum = 0
 
     for i in range(1, number):
