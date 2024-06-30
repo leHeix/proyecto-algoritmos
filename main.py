@@ -444,7 +444,7 @@ def main():
                 print("| 1 - Promedio de gasto de un cliente VIP en el estadio: Desconocido")
                 print("| 2 - Asistencia de partidos:")
 
-                match_list = [] + matches.get_matches() # makes a copy of the list
+                match_list = matches.get_matches().copy() # makes a copy of the list
                 match_list.sort(key=lambda x: x.get_assistance_count(), reverse=True)
                 for m in match_list:
                     print(f"|     - {m.get_home_team().get_country()} - {m.get_away_team().get_country()}, en {m.get_stadium().get_name()} ({m.get_sold_ticket_count()} entradas vendidas, {m.get_assistance_count()} personas asistieron)")
@@ -458,7 +458,11 @@ def main():
                         highest_selling_match = m
                         most_sold_tickets = m.get_sold_ticket_count()
 
-                print(f"| 4 - Partido con mayor cantidad de entradas vendidas: {highest_selling_match.get_home_team().get_country()} - {highest_selling_match.get_away_team().get_country()} ({most_sold_tickets} entradas vendidas)")
+                if highest_selling_match == None:
+                    print("| 4 - Partido con mayor cantidad de entradas vendidas: Ningun partido vendio entradas.")
+                else:
+                    print(f"| 4 - Partido con mayor cantidad de entradas vendidas: {highest_selling_match.get_home_team().get_country()} - {highest_selling_match.get_away_team().get_country()} ({most_sold_tickets} entradas vendidas)")
+                
                 input("| -> Presiona ENTER para volver al menú.")
                 current_menu = 0
 
