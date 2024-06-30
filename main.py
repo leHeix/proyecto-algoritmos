@@ -255,6 +255,13 @@ def main():
 
                 # im actually not accounting for already occupied seats but whatever bruh
                 # ^ i am now haha
+                # i could have done this using Match#get_free_seats and print in a sequence of (assuming i = 0):
+                #   seats[i:10]
+                #   i += 10
+                # but that list doesn't contain used seats so:
+                # 1 - seats would be shown on rows they're not actually in on the stadium
+                # 2 - i thought of a number two but i forgot what i was about to write so here's a meaningless second point of the list
+
                 j = 0
                 lim = customer_match.get_stadium().get_capacity()[1 if customer_ticket_type == "vip" else 0]
                 for i in range(1, lim + 1):
