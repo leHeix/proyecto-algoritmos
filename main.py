@@ -219,10 +219,7 @@ def main():
 
             case 4: # Comprar entrada
                 print("| --------- Euro 2024 / Comprar entrada --------- |")
-                customer_name = input("| Introduzca su nombre (o SALIR para volver al menú principal) => ")
-                if customer_name == "SALIR":
-                    current_menu = 0
-                    continue
+                customer_name = input("| Introduzca su nombre (o presione CTRL + C para volver al menú principal) => ")
 
                 try:
                     customer_id = int(input("| Introduzca su cédula => "))
@@ -237,19 +234,35 @@ def main():
                 customer_match_id = input("| Introduzca la ID del partido => ")
                 customer_match = matches.find_match_by_id(customer_match_id)
                 if customer_match == None:
-                    input("| -> Partido inválido, presiona ENTER para volver al menú.")
+                    input("| -> Partido inválido, presiona ENTER para reiniciar el formulario o CTRL + C para volver al menú principal.")
                     continue
 
                 if customer_match.is_sold_out():
-                    input("| -> Este partido esta sold out, presiona ENTER para volver al menú.")
+                    input("| -> Este partido está sold out, presiona ENTER para reiniciar el formulario o CTRL + C para volver al menú principal.")
                     continue
 
                 customer_ticket_type = input("| Tipo de entrada (VIP/General) => ").lower()
                 if customer_ticket_type != "vip" and customer_ticket_type != "general":
-                    input("| -> Tipo de entrada inválido, presiona ENTER para volver al menú.")
+                    input("| -> Tipo de entrada inválido, presiona ENTER para reiniciar el formulario")
                     continue
 
-                print(f"| Asientos libres: {customer_match.get_free_seats(customer_ticket_type == "vip")}")
+                seats = customer_match.get_free_seats(customer_ticket_type == "vip")
+                seats_len = len(seats)
+                if len(seats) == 0:
+                    input("| -> No quedan entradas de ese tipo. Presiona ENTER para reiniciar el formulario o CTRL + C para volver al menú principal.")
+                    continue
+
+                print(f"| Asientos libres:")
+
+                # im actually not accounting for already occupied seats but whatever bruh
+                i = 0
+                while True:
+                    if i + 10 >= seats_len:
+                        print(f"| {seats[i:]}")
+                        break
+                    else:
+                        print(f"| {seats[i:i+10]}")
+                        i += 10
 
                 customer_seat_assigned = False
                 while not customer_seat_assigned:
