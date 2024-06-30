@@ -44,7 +44,7 @@ class Match:
         return self.__stadium
     
     def is_seat_occupied(self, seat: int) -> bool:
-        return seat in self.__tickets_sold and self.__tickets_sold[seat]
+        return seat in self.__tickets_sold
     
     def occupy_seat(self, seat: int, customer_id: int) -> str:
         ticket_id = str(uuid4())
@@ -100,6 +100,9 @@ class Match:
     
     def get_sold_ticket_count(self) -> int:
         return len(self.__tickets_sold)
+    
+    def get_all_tickets_data(self) -> dict:
+        return self.__tickets_sold
     
 class MatchManager:
     __matches: list[Match] = []

@@ -247,22 +247,31 @@ def main():
                     continue
 
                 seats = customer_match.get_free_seats(customer_ticket_type == "vip")
-                seats_len = len(seats)
                 if len(seats) == 0:
                     input("| -> No quedan entradas de ese tipo. Presiona ENTER para reiniciar el formulario o CTRL + C para volver al menú principal.")
                     continue
 
-                print(f"| Asientos libres:")
+                print(f"| Asientos libres (los asientos marcados no están disponibles):")
 
                 # im actually not accounting for already occupied seats but whatever bruh
-                i = 0
-                while True:
-                    if i + 10 >= seats_len:
-                        print(f"| {seats[i:]}")
-                        break
+                # ^ i am now haha
+                j = 0
+                lim = customer_match.get_stadium().get_capacity()[1 if customer_ticket_type == "vip" else 0]
+                for i in range(1, lim + 1):
+                    if j == 0:
+                        print("| [", end="")
+
+                    if customer_match.is_seat_occupied(i):
+                        print(f"\x1b[9m{i}\x1b[0m", end="")
                     else:
-                        print(f"| {seats[i:i+10]}")
-                        i += 10
+                        print(i, end="")
+
+                    if j + 1 == 10 or i == lim:
+                        print("]")
+                        j = 0
+                    else:
+                        print(", ", end="")
+                        j += 1
 
                 customer_seat_assigned = False
                 while not customer_seat_assigned:
