@@ -230,7 +230,7 @@ def main():
                     if customer_age < 0:
                         raise ValueError
                 except ValueError:
-                    print("| -> Datos inválidos (ambos deben ser números o la edad debe ser positiva). Presiona ENTER para volver al menú.")
+                    print("| -> Datos inválidos (ambos deben ser números y la edad debe ser positiva). Presiona ENTER para volver al menú.")
                     current_menu = 0
                     continue
 
