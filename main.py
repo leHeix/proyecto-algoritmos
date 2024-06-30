@@ -467,7 +467,7 @@ def main():
                 current_menu = 0
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] %(message)s")
+    logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     logger.info("|-- Registrando datos --|")
     stadiums = StadiumManager()
