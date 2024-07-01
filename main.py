@@ -449,7 +449,7 @@ def main():
                                 continue
 
                     print("| -----------------")
-                    final_price = p.get_price()
+                    final_price = product.get_price()
                     print(f"| Precio: {final_price}$")
                     if is_perfect_number(customer_id):
                         discount = (15 * final_price) / 100
